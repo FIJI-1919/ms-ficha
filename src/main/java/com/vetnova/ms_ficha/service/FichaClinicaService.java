@@ -23,4 +23,8 @@ public class FichaClinicaService {
     public FichaClinica guardar(FichaClinica ficha) {
         return repository.save(ficha);
     }
+    
+    public FichaClinica buscarPorId(Long id) {
+        return repository.findById(id).orElse(null);
+    }
 }

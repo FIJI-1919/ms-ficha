@@ -25,6 +25,11 @@ public class FichaClinicaController {
         return service.listar();
     }
 
+    @GetMapping("/{id}")
+    public FichaClinica buscarPorId(@PathVariable Long id) {
+        return service.buscarPorId(id);
+    }
+
     @PostMapping
     public FichaClinica guardar(@Valid @RequestBody FichaClinica ficha) {
         return service.guardar(ficha);
