@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 
+import com.vetnova.ms_ficha.dto.CitaDTO;
 import com.vetnova.ms_ficha.model.FichaClinica;
 import com.vetnova.ms_ficha.service.FichaClinicaService;
 
@@ -11,7 +12,6 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("api/v1/fichas")
-
 public class FichaClinicaController {
 
     private final FichaClinicaService service;
@@ -33,5 +33,10 @@ public class FichaClinicaController {
     @PostMapping
     public FichaClinica guardar(@Valid @RequestBody FichaClinica ficha) {
         return service.guardar(ficha);
+    }
+
+    @GetMapping("/citas")
+    public List<CitaDTO> obtenerCitas() {
+        return service.obtenerCitas();
     }
 }
