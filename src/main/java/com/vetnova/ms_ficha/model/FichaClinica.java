@@ -1,35 +1,45 @@
 package com.vetnova.ms_ficha.model;
 
-import jakarta.persistence.*;
+import java.time.LocalDate;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "fichas_clinicas")
 @Data
 @NoArgsConstructor
-
+@AllArgsConstructor
 public class FichaClinica {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "La mascota es obligatoria")
-    @Size(min = 2, max = 50)
-    private String mascota;
+    private Long citaId;
 
-    @NotBlank(message = "El diagnostico es obligatorio")
-    @Size(min = 5, max = 200)
+    private Long mascotaId;
+
     private String diagnostico;
 
-    @NotBlank(message = "El tratamiento es obligatorio")
-    @Size(min = 5, max = 200)
     private String tratamiento;
 
-    @NotBlank(message = "El veterinario es obligatorio")
+    private String observaciones;
+
     private String veterinario;
+
+    private LocalDate fechaRegistro;
+
+    @PrePersist
+    public void asignarFechaRegistro() {
+        this.fechaRegistro = LocalDate.now();
+    }
 }
