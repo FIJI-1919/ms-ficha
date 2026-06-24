@@ -134,7 +134,7 @@ public class FichaClinicaService {
             logger.info("Consultando citas desde ms-agenda");
 
             return webClient.get()
-                    .uri("http://localhost:8085/api/v1/citas")
+                    .uri("http://localhost:8086/api/v1/citas")
                     .retrieve()
                     .bodyToFlux(CitaDTO.class)
                     .collectList()
@@ -153,7 +153,7 @@ public class FichaClinicaService {
             logger.info("Validando cita con ID: " + citaId);
 
             return webClient.get()
-                    .uri("http://localhost:8085/api/v1/citas/" + citaId)
+                    .uri("http://localhost:8086/api/v1/citas/" + citaId)
                     .retrieve()
                     .bodyToMono(CitaDTO.class)
                     .block();
