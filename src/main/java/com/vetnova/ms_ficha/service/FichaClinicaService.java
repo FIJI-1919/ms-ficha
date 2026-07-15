@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -20,6 +20,8 @@ import com.vetnova.ms_ficha.exception.FichaNoEncontradaException;
 import com.vetnova.ms_ficha.exception.ReglaNegocioException;
 import com.vetnova.ms_ficha.model.FichaClinica;
 import com.vetnova.ms_ficha.repository.FichaClinicaRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class FichaClinicaService {
@@ -52,8 +54,7 @@ public class FichaClinicaService {
         FichaClinica ficha = repository.findById(id)
                 .orElseThrow(() -> {
                     logger.error("Ficha clínica no encontrada con ID: " + id);
-                    return new FichaNoEncontradaException(
-                            "Ficha clínica no encontrada");
+                    return new FichaNoEncontradaException("Ficha clínica no encontrada");
                 });
 
         return convertirAResponse(ficha);
@@ -90,8 +91,7 @@ public class FichaClinicaService {
         FichaClinica ficha = repository.findById(id)
                 .orElseThrow(() -> {
                     logger.error("Ficha clínica no encontrada con ID: " + id);
-                    return new FichaNoEncontradaException(
-                            "Ficha clínica no encontrada");
+                    return new FichaNoEncontradaException("Ficha clínica no encontrada");
                 });
 
         validarCambioCitaEnActualizacion(id, dto.getCitaId());
@@ -120,8 +120,7 @@ public class FichaClinicaService {
         FichaClinica ficha = repository.findById(id)
                 .orElseThrow(() -> {
                     logger.error("Ficha clínica no encontrada con ID: " + id);
-                    return new FichaNoEncontradaException(
-                            "Ficha clínica no encontrada");
+                    return new FichaNoEncontradaException("Ficha clínica no encontrada");
                 });
 
         repository.delete(ficha);
@@ -133,8 +132,15 @@ public class FichaClinicaService {
         try {
             logger.info("Consultando citas desde ms-agenda");
 
+            HttpServletRequest request =
+                    ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                            .getRequest();
+
+            String authHeader = request.getHeader("Authorization");
+
             return webClient.get()
                     .uri("http://localhost:8086/api/v1/citas")
+                    .header("Authorization", authHeader)
                     .retrieve()
                     .bodyToFlux(CitaDTO.class)
                     .collectList()
@@ -152,8 +158,15 @@ public class FichaClinicaService {
         try {
             logger.info("Validando cita con ID: " + citaId);
 
+            HttpServletRequest request =
+                    ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                            .getRequest();
+
+            String authHeader = request.getHeader("Authorization");
+
             return webClient.get()
                     .uri("http://localhost:8086/api/v1/citas/" + citaId)
+                    .header("Authorization", authHeader)
                     .retrieve()
                     .bodyToMono(CitaDTO.class)
                     .block();
